@@ -1,0 +1,66 @@
+Commands to create docker images, tags ,push containers into the Github, run containers : 
+---------------------------------------------------------------------------------------------
+
+docker build -t details .
+docker tag details:latest user_name/details
+docker push user_name/details
+docker run -d -p 4000:4000 details
+
+docker build -t frontend .
+docker tag frontend:latest user_name/frontend
+docker push user_name/frontend
+docker run -d -p 9000:9000 frontend
+
+docker build -t v1 . 
+docker tag v1:latest user_name/v1
+docker push user_name/v1
+docker run -d -p 3000:3000 v1
+
+docker build -t v2 .
+docker tag v2:latest user_name/v2
+docker push user_name/v2
+docker run -d -p 3006:3006 v2
+
+
+Kubernetes commands:
+-------------------------
+minikube start
+minikube status
+kubectl get nodes
+kubectl get pods
+kubectl get deployments
+kubectl get services
+kubectl apply -f pinger-all-in-one
+kubectl get pods
+kubectl get services
+
+
+
+Helm Steps:
+Steps to Install Prometheus:
+--------------------------------
+
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+helm repo update
+helm install prometheus prometheus-community/prometheus
+kubectl expose service prometheus-server --type=NodePort --target-port=9090 --name=prometheus-server-ext
+minikube service prometheus-server-ext
+
+
+Steps to install Grafana:
+--------------------------
+
+helm repo add grafana https://grafana.github.io/helm-charts
+helm repo update
+helm install grafana stable/grafana
+kubectl expose service grafana --type=NodePort --target-port=3000 --name=grafana-ext
+minikube service grafana-ext
+
+To get user name and password in Grafana:
+
+kubectl get secret --namespace default grafana -o yaml
+echo "RkpwY21aTFNXRDVJN3Z4RWFFUjlibkV1SDBDbnFBendadmc0bmROZQ==" | openssl base64 -d ; echo
+
+or 
+
+kubectl get secret --namespace default grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo
